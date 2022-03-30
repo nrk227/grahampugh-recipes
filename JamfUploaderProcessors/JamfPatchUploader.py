@@ -294,7 +294,7 @@ class JamfPatchUploader(JamfUploaderBase):
                     url=url,
                     enc_creds=enc_creds,
                     token=token,
-                    data=patch_template
+                    data=patch_template,
                 )
             # if the patch ID doesn't exist, do a PUT without the XML template
             else:
@@ -302,7 +302,7 @@ class JamfPatchUploader(JamfUploaderBase):
                     request=request,
                     url=url,
                     enc_creds=enc_creds,
-                    token=token
+                    token=token,
                 )
 
             # check HTTP response
@@ -474,16 +474,27 @@ class JamfPatchUploader(JamfUploaderBase):
                 )
                 return
 
-        # Upload the patch
-        r = self.upload_patch(
-            self.jamf_url,
-            self.patch_name,
-            self.patch_softwaretitle_id,
-            patch_template=patch_template_xml,
-            patch_id=patch_id,
-            enc_creds=send_creds,
-            token=token,
-        )
+        if patch_id:
+            # Upload the patch
+            r = self.upload_patch(
+                self.jamf_url,
+                self.patch_name,
+                self.patch_softwaretitle_id,
+                patch_template=patch_template_xml,
+                patch_id=patch_id,
+                enc_creds=send_creds,
+                token=token,
+            )
+        else:
+            # Create the new patch
+            r = self.create_patch(
+                self.jamf_url,
+                self.patch_name,
+                self.patch_softwaretitle_id,
+                patch_id=patch_id,
+                enc_creds=send_creds,
+                token=token,
+            )
 
         # Parse xml output to get patch id of freshly created patch policy.
         try:

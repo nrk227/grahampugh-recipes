@@ -286,13 +286,25 @@ class JamfPatchUploader(JamfUploaderBase):
             count += 1
             self.output("Patch upload attempt {}".format(count), verbose_level=2)
             request = "PUT" if patch_id else "POST"
-            r = self.curl(
-                request=request,
-                url=url,
-                enc_creds=enc_creds,
-                token=token,
-                data=patch_template,
-            )
+
+            # if the patch ID exists, do a POST and use the XML template
+            if patch_id:
+                r = self.curl(
+                    request=request,
+                    url=url,
+                    enc_creds=enc_creds,
+                    token=token,
+                    data=patch_template
+                )
+            # if the patch ID doesn't exist, do a PUT without the XML template
+            else:
+                r = self.curl(
+                    request=request,
+                    url=url,
+                    enc_creds=enc_creds,
+                    token=token
+                )
+
             # check HTTP response
             if self.status_check(r, "Patch", patch_name, request) == "break":
                 break

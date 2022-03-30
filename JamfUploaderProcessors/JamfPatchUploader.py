@@ -244,6 +244,19 @@ class JamfPatchUploader(JamfUploaderBase):
                 raise ProcessorError("ERROR: Patch Softwaretitle upload failed.")
             sleep(10)
 
+    def create_patch(
+        self,
+        jamf_url,
+        patch_name,
+        patch_softwaretitle_id,
+        patch_id=0,
+        enc_creds="",
+        token="",
+    ):
+
+        """Creates the patch policy"""
+        self.output("Creating Patch policy...")
+
     def upload_patch(
         self,
         jamf_url,
